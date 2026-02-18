@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/task_model.dart';
-import '../providers/task_provider.dart';
+import '../controller/task_cubit.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -25,7 +25,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           children: [
             Align(
               alignment: Alignment.topLeft,
-              child: TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel", style: TextStyle(color: Colors.grey, fontSize: 16))),
+              child: TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel", style: TextStyle(color: Colors.grey, fontSize: 16)),
+              ),
             ),
             const SizedBox(height: 20),
             const Text("Add a task", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
@@ -33,7 +36,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
             TextField(
               controller: controller,
-              decoration: const InputDecoration(hintText: "Name your task", border: UnderlineInputBorder()),
+              decoration: const InputDecoration(
+                hintText: "Name your task",
+                border: UnderlineInputBorder(),
+              ),
             ),
             const SizedBox(height: 30),
 
@@ -47,7 +53,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(color: cat.color.withOpacity(0.1), borderRadius: BorderRadius.circular(5)),
+                      decoration: BoxDecoration(
+                        color: cat.color.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                       child: Icon(cat.icon, color: cat.color, size: 18),
                     ),
                     const SizedBox(width: 12),
@@ -72,11 +81,16 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 15),
-                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey[300]!))),
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("${selectedDate.month}/${selectedDate.day}/${selectedDate.year.toString().substring(2)}", style: const TextStyle(fontSize: 16)),
+                    Text(
+                      "${selectedDate.month}/${selectedDate.day}/${selectedDate.year.toString().substring(2)}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
                     const Icon(Icons.calendar_month_outlined, color: Colors.grey),
                   ],
                 ),
@@ -93,7 +107,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
               onPressed: () {
                 if (controller.text.isNotEmpty) {
-                  context.read<TaskProvider>().addTask(controller.text, selectedCategory, selectedDate);
+                  context.read<TaskCubit>().addTask(
+                    controller.text,
+                    selectedCategory,
+                    selectedDate,
+                  );
                   Navigator.pop(context);
                 }
               },
@@ -103,5 +121,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

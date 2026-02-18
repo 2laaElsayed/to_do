@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/task_model.dart';
-import '../providers/task_provider.dart';
+import '../controller/task_cubit.dart';
 
 class TaskItem extends StatelessWidget {
   final TaskModel task;
@@ -11,30 +11,29 @@ class TaskItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)],
       ),
       child: ListTile(
-        leading: Consumer<TaskProvider>(
-          builder: (context, provider, _) => Checkbox(
-            value: task.isCompleted,
-            activeColor: const Color(0xFF008080),
-            onChanged: (val) => provider.toggleStatus(task.id),
-          ),
+        leading: BlocBuilder<TaskCubit, TaskState>(
+          builder: (context, state) {
+            return Checkbox(
+              value: task.isCompleted,
+              activeColor: const Color(0xFF008080),
+              onChanged: (_) => context.read<TaskCubit>().toggleStatus(task.id),
+            );
+          },
         ),
         title: Text(
           task.title,
           style: TextStyle(
             color: task.isCompleted ? Colors.grey : Colors.black87,
+            decoration: TextDecoration.none,
           ),
         ),
-        subtitle: Text(
-          "${task.date.day}/${task.date.month}/${task.date.year}",
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
-        ),
+        subtitle: Text("${task.date.month}/${task.date.day}/${task.date.year}"),
       ),
     );
   }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'controller/task_cubit.dart';
 import 'screens/home_screen.dart';
-import 'providers/task_provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => TaskProvider(),
+    BlocProvider(
+      create: (context) => TaskCubit(),
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: HomeScreen(),
