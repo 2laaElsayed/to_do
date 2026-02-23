@@ -7,33 +7,50 @@ class TaskItem extends StatelessWidget {
   final TaskModel task;
   const TaskItem({super.key, required this.task});
 
+  String formatTime(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)],
+    return Dismissible(
+      key: Key(task.id),
+      onDismissed: (_) => context.read<TaskCubit>().deleteTask(task.id),
+      background: Container(
+        color: Colors.red.withOpacity(0.1),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(Icons.delete, color: Colors.red),
       ),
-      child: ListTile(
-        leading: BlocBuilder<TaskCubit, TaskState>(
-          builder: (context, state) {
-            return Checkbox(
-              value: task.isCompleted,
-              activeColor: const Color(0xFF008080),
-              onChanged: (_) => context.read<TaskCubit>().toggleStatus(task.id),
-            );
-          },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
         ),
-        title: Text(
-          task.title,
-          style: TextStyle(
-            color: task.isCompleted ? Colors.grey : Colors.black87,
-            decoration: TextDecoration.none,
+        child: ListTile(
+          leading: Checkbox(
+            value: task.isChecked,
+            activeColor: const Color(0xFF008080),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            onChanged: (_) => context.read<TaskCubit>().toggleStatus(task.id),
+          ),
+          title: Text(
+            task.title,
+            style: TextStyle(
+              color: task.isChecked ? Colors.grey : Colors.black87,
+              decoration: TextDecoration.none,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          subtitle: Text(
+            formatTime(task.time),
+            style: TextStyle(color: task.isChecked ? Colors.grey : Colors.blueGrey),
           ),
         ),
-        subtitle: Text("${task.date.month}/${task.date.day}/${task.date.year}"),
       ),
     );
   }

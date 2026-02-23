@@ -12,7 +12,8 @@ class AddTaskScreen extends StatefulWidget {
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
   final controller = TextEditingController();
-  CategoryData selectedCategory = appCategories[0];
+
+  TaskCategory selectedCategory = TaskCategory.personal;
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -43,11 +44,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             ),
             const SizedBox(height: 30),
 
-            DropdownButton<CategoryData>(
+            DropdownButton<TaskCategory>(
               value: selectedCategory,
               isExpanded: true,
               underline: Container(height: 1, color: Colors.grey[300]),
-              items: appCategories.map((cat) => DropdownMenuItem(
+              items: TaskCategory.values.map((cat) => DropdownMenuItem(
                 value: cat,
                 child: Row(
                   children: [
@@ -88,7 +89,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${selectedDate.month}/${selectedDate.day}/${selectedDate.year.toString().substring(2)}",
+                      "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
                       style: const TextStyle(fontSize: 16),
                     ),
                     const Icon(Icons.calendar_month_outlined, color: Colors.grey),
